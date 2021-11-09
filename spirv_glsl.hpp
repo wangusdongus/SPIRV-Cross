@@ -156,6 +156,10 @@ public:
 		bool fixup_layout_locations = false;
 		// UE Change End: Fixup layout locations to include padding for arrays.
 
+		// UE Change Begin: Allow disabling explicit binding slots.
+		bool disable_explicit_binding = false;
+		// UE Change End: Allow disabling explicit binding slots.
+
 		// UE Change Begin: Enable textureBuffer over samplerBuffer.
 		bool enable_texture_buffer = false;
 		// UE Change End: Enable textureBuffer over samplerBuffer.
