@@ -7127,7 +7127,10 @@ std::string CompilerGLSL::convert_separate_image_to_expression(uint32_t id)
 	if (var)
 	{
 		auto &type = get<SPIRType>(var->basetype);
-		if (type.basetype == SPIRType::Image && type.image.sampled == 1 && type.image.dim != DimBuffer)
+		// UE Change Begin: Enable textureBuffer over samplerBuffer.
+		if (type.basetype == SPIRType::Image && type.image.sampled == 1 &&
+		    (type.image.dim != DimBuffer || options.enable_texture_buffer))
+		// UE Change End: Enable textureBuffer over samplerBuffer.
 		{
 			if (options.vulkan_semantics)
 			{
@@ -13584,7 +13587,14 @@ string CompilerGLSL::image_type_glsl(const SPIRType &type, uint32_t id)
 	{
 		// Sampler buffers are always declared as samplerBuffer even though they might be separate images in the SPIR-V.
 		if (type.image.dim == DimBuffer && type.image.sampled == 1)
-			res += "sampler";
+		{
+			// UE Change Begin: Enable textureBuffer over samplerBuffer.
+			if (options.enable_texture_buffer)
+				res += "texture";
+			else
+				res += "sampler";
+			// UE Change End: Enable textureBuffer over samplerBuffer.
+		}
 		else
 			res += type.image.sampled == 2 ? "image" : "texture";
 	}
