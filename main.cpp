@@ -1402,7 +1402,7 @@ static string compile_iteration(const CLIArguments &args, std::vector<uint32_t> 
 
 	if (combined_image_samplers)
 	{
-		compiler->build_combined_image_samplers();
+		compiler->build_combined_image_samplers(false);
 		if (args.combined_samplers_inherit_bindings)
 			spirv_cross_util::inherit_combined_sampler_bindings(*compiler);
 

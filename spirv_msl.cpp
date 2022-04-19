@@ -8687,7 +8687,9 @@ void CompilerMSL::emit_texture_op(const Instruction &i, bool sparse)
 		{
 			// Subpass inputs cannot be invalidated,
 			// so just forward the expression directly.
-			string expr = to_expression(img);
+			// UE Change Begin: Allow input attachments as float.
+			string expr = "float4(" + to_expression(img) + ")";
+			// UE Change End: Allow input attachments as float.
 			emit_op(result_type_id, id, expr, true);
 			return;
 		}
@@ -12177,9 +12179,9 @@ void CompilerMSL::entry_point_args_discrete_descriptors(string &ep_args)
 				{
 					new_type.vecsize = subpass_dim;
 
-					// UE Change Begin: Allow input attachments as float
+					// UE Change Begin: Allow input attachments as float.
 					type.vecsize = subpass_dim;
-					// UE Change End: Allow input attachments as float
+					// UE Change End: Allow input attachments as float.
 
 					// Ensure new type has a parent type if we generated a vector
 					if (subpass_type.vecsize == 1 && subpass_dim != 1)
@@ -14061,9 +14063,9 @@ string CompilerMSL::image_type_glsl(const SPIRType &type, uint32_t id)
 			// Use Metal's native frame-buffer fetch API for subpass inputs.
 			if (type_is_msl_framebuffer_fetch(type))
 			{
-				auto img_type_4 = get<SPIRType>(img_type.type);
-				img_type_4.vecsize = 4;
-				return type_to_glsl(img_type_4);
+				// UE Change Begin: Allow input attachments as float.
+				return type_to_glsl(get<SPIRType>(img_type.type));
+				// UE Change End: Allow input attachments as float.
 			}
 			if (img_type.ms && (img_type.arrayed || subpass_array))
 			{
