@@ -52,11 +52,23 @@ enum PlsFormat
 	PlsR32UI
 };
 
+// UE Change Begin: Improved support for PLS and FBF
 struct PlsRemap
 {
 	uint32_t id;
+	std::string name;
 	PlsFormat format;
 };
+
+struct PlsInOutRemap
+{
+	uint32_t input_id;
+	std::string input_name;
+	uint32_t output_id;
+	std::string output_name;
+	PlsFormat format;
+};
+// UE Change End: Improved support for PLS and FBF
 
 enum AccessChainFlagBits
 {
@@ -222,12 +234,17 @@ public:
 		} fragment;
 	};
 
-	void remap_pixel_local_storage(std::vector<PlsRemap> inputs, std::vector<PlsRemap> outputs)
+	// UE Change Begin: Improved support for PLS and FBF
+	void remap_pixel_local_storage(std::vector<PlsRemap> inputs, std::vector<PlsRemap> outputs, std::vector<PlsInOutRemap> inouts)
 	{
 		pls_inputs = std::move(inputs);
 		pls_outputs = std::move(outputs);
+		pls_inouts = std::move(inouts);
 		remap_pls_variables();
 	}
+
+	static uint32_t pls_format_to_components(PlsFormat format);
+	// UE Change End: Improved support for PLS and FBF
 
 	// Redirect a subpassInput reading from input_attachment_index to instead load its value from
 	// the color attachment at location = color_location. Requires ESSL.
@@ -918,6 +935,12 @@ protected:
 	std::vector<PlsRemap> pls_inputs;
 	std::vector<PlsRemap> pls_outputs;
 	std::string pls_decl(const PlsRemap &variable);
+
+	// UE Change Begin: Improved support for PLS and FBF
+	std::vector<PlsInOutRemap> pls_inouts;
+	std::string pls_decl(const PlsInOutRemap &variable);
+	// UE Change End: Improved support for PLS and FBF
+
 	const char *to_pls_qualifiers_glsl(const SPIRVariable &variable);
 	void emit_pls();
 	void remap_pls_variables();
