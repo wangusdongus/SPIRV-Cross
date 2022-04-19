@@ -178,6 +178,14 @@ public:
 		bool enable_texture_buffer = false;
 		// UE Change End: Enable textureBuffer over samplerBuffer.
 
+		// UE Change Begin: Emit structure padding to support uniform buffers with offsets
+		bool pad_ubo_blocks = false;
+		// UE Change End: Emit structure padding to support uniform buffers with offsets
+
+		// UE Change Begin: Force Glsl Clipspace when using ES
+		bool force_glsl_clipspace = false;
+		// UE Change End: Force Glsl Clipspace when using ES
+
 		enum Precision
 		{
 			DontCare,
@@ -439,6 +447,10 @@ protected:
 	virtual std::string variable_decl(const SPIRType &type, const std::string &name, uint32_t id = 0);
 	virtual bool variable_decl_is_remapped_storage(const SPIRVariable &var, spv::StorageClass storage) const;
 	virtual std::string to_func_call_arg(const SPIRFunction::Parameter &arg, uint32_t id);
+
+	// UE Change Begin: Emit structure padding to support uniform buffers with offsets
+	void emit_struct_member_padding(const SPIRType &type, uint32_t index);
+	// UE Change End: Emit structure padding to support uniform buffers with offsets
 
 	struct TextureFunctionBaseArguments
 	{
